@@ -1,7 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-const ejsLint = require('ejs-lint');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var ejs = require('ejs');
@@ -10,8 +9,9 @@ var expressMessage = require('express-message');
 var session =require('express-session');
 var localStrategy = require('passport-local').Strategy;
 var passport=require('passport');
-var flash = require('connect-flash')
 var dotenv=require('dotenv').config()
+var swaggerJsdoc =require('swagger-jsdoc');
+var swaggerUi= require('swagger-ui-express')
 
 
 var indexRouter = require('./routes/index');
@@ -28,37 +28,18 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 app.use(passport.session());
-// //Google authentication
-// var passport = require('passport');
-// var GoogleStrategy = require('passport-google-oauth').OAuthStrategy;
-// passport.use(new GoogleStrategy({
-//     consumerKey:  process.env.consumerKey,
-//     consumerSecret: process.env.consumerSecret,
-//     callbackURL: "localhost:4242/auth/google/callback"
-//   },
-//   function(token, tokenSecret, profile, done) {
-//       User.findOrCreate({ googleId: profile.id }, function (err, user) {
-//         return done(err, user);
-//       });
-//   }
-// ));
-// //facebook authentication
-// var passport = require('passport')
-// var FacebookStrategy = require('passport-facebook').Strategy;
 
-// passport.use(new FacebookStrategy({
-//     consumerKey: process.env['FACEBOOK_CLIENT_ID'],
-//     clientSecret: process.env['FACEBOOK_CLIENT_SECRET'],
-//     callbackURL: "localhost:4242/auth/facebook/callback"
-//   },
-//   function(accessToken, refreshToken, profile, done) {
-//     User.findOrCreate({ facebook_id: profile.id }, function(err, user) {
-//       if (err) { return done(err); }
-//       done(null, user);
-//     });
-//   }
-// ))
-
+const swaggerOptions ={
+  swaggerDefinition :{
+    info:{
+      title:'Job posts_final exam',
+      description:'job posting application'
+    }
+  },
+  apis:['./routes/*.js']
+}
+const swaggerDocs = swaggerJsdoc(swaggerOptions)
+app.use('/api-docs',swaggerUi.serve,swaggerUi.setup(swaggerDocs))
 app.use(require('connect-flash')());
 app.use(function (req, res, next) {
   res.locals.messages =(req, res);

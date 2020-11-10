@@ -3,6 +3,10 @@ var dataBase = require('../config/dabaB')
 const bcrypt = require('bcryptjs');
 const { db } = require('../models/user');
 const nodemailer = require('nodemailer');
+var fbMODEL =require('../models/accessJsonfb');
+var adMODEL = require('../models/jsonfb');
+var YTMODEL= require('../models/accessYT')
+var channelMODEL = require('../models/ytChannel')
 
  const authController = {
  loginAction: async (req, res) => {
@@ -33,42 +37,18 @@ const nodemailer = require('nodemailer');
            },   
 
   signupAction: (req, res) => {
-            var email = req.body.email;
-            var coPassword = req.body.coPassword;
-            var password = req.body.password;
-            var username = req.body.username;
-            
-            
-              req.checkBody('email', 'Email is required.').notEmpty();
-              req.checkBody('username', 'username is required.').notEmpty();
-              req.checkBody('password', 'Password is required.').isLength({min:6});
-              req.checkBody('coPassword', 'Password not same, try again!!').equals(password);
-            
-              var errors = req.validationErrors();
-            
-              if(errors){
-  //if there is an error in the entry of the information then the this will show the error and ask the user to enter the information again , by redirecting  to the registration page
-                console.log('errors')
-                res.send('registeration page')
-         
-              }else{ 
-  // if not this will register the user to database, and send them to login page to login.
-              res.send('login page')
               userModel.create({
                 username:  req.body.username,
                 email: req.body.email,
                 password: req.body.password,
                 created_at: Date.now()
            }).then(data =>{
-             console.log(data)
+             res.send('registered')
            dataBase.userRegistration(data) 
            })
-              }
-             
-            
                 },
   forgetPasswordAction: async (req, res) => {
-  // The user will be asked to enter thier email address if found there will be a link sent to them to reset thier password.
+  // The user will be asked to enter their email address if found there will be a link sent to them to reset their password.
             try {
              let users = await db.collection('itraceUser').findOne({email:req.body.email});
 
@@ -81,8 +61,8 @@ const nodemailer = require('nodemailer');
                     secure: false,
                     requireTLS: true,
                     auth: {
-                        user: 'itrace email address',
-                        pass: 'itrace password'
+                        user: 'raniyakelifa12@gmail.com',
+                        pass: '123456789rani'
                         }
                       });
                       let mailOptions = {
@@ -109,45 +89,179 @@ const nodemailer = require('nodemailer');
                   console.log(error)
                  }
    },
-    
-          
-        replaceLink:(req, res)=>{
-          var coPassword = req.body.coPassword;
-          var password = req.body.password;
-          var email = req.body.email;
       
-          req.checkBody('email', 'email is required.').notEmpty();
-          req.checkBody('password', 'Password is required.').isLength({min:6});
-          req.checkBody('coPassword', 'Password not same, try again!!').equals(password);
-        
-      
-          var errors = req.validationErrors();
-          
-          if(errors){
-            console.log('error')
-            res.redirect('/resetpassword')
-      
-          }else{
-            console.log('no errors')
-            dataBase.replacePassword(email,password)
-            
-          }
-        },
-      
-      
-      
-          logoutAction:(req,res,next)=>{
-      if(req.isAuthenticated()){
-        return next()
-      
-      }
-      else{
-        res.redirect('/login')
-      }
-          },
+        facebookApi:async (req,res)=>{
+          var id = Math.floor(1000000000000 + Math.random() * 9000000000000)
+          ID= id.toString()
+          var d = new Date()
+          var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+          var email = req.body.email 
+          var user = await db.collection('itraceUser').findOne({email:email})
+          if (user !== null){
+            fbMODEL.create({
+              created_time: Date.now(),
+              message: "This is the post on date " + d.getDate() +" in  " + months[d.getMonth()] + " During the pamdamic year " + d.getFullYear(),
+              id:ID
+         }).then(data =>{
+           res.json({
+             data
+           })
+         })
+        }else{
+          res.send('NOT FOUND')
         }
+        },
+        facebookad:async(req, res)=>{
+          var email = req.body.email 
+          var id = Math.floor(1000000000000 + Math.random() * 9000000000000)
+          ID= id.toString()
+          var user = await db.collection('itraceUser').findOne({email:email})
+          if (user !== null){
+           adMODEL.create({
+            is_eligible_for_promotion: true,
+            promotable_id: ID,
+            id: id + id
+         }).then(data =>{
+           res.json({
+             data
+           })
+         })
+        }else{
+          res.send('NOT FOUND')
+        }
+        },
+        youTube:async (req,res)=>{
+          var username = req.body.username;
+          var id = Math.floor(100 + Math.random() * 900)
+          var ID=Math.floor(10000000 + Math.random() * 90000000)
+          var user = await db.collection('itraceUser').findOne({username:username})
+          if (user !== null){
+        YTMODEL.create({
+          id: ID,
+          kind: "youtube account",
+          etag: "33a64df551425fcc55e4d42a148795d9f25f89d4",
+          contentDetails: {
+            relatedPlaylists: {
+              likes: id*id,
+              favorites: id,
+              watchHistory: id*id*id,
+              watchLater: id+20,
+            }
+          }
+        }).then(data =>{
+          res.json({
+            data
+          })
+        })
+          }else{
+            res.send('NOT FOUND')
+          }
+ },
+ ytChannel:async(req,res)=>{
+  var username = req.body.username;
+  var id = Math.floor(100 + Math.random() * 900)
+  var user = await db.collection('itraceUser').findOne({username:username})
+  if (user !== null){
+channelMODEL.create({
+kind: "YOUTUBE CHANNEL",
+etag:  "33a64df551425fcc55e4d42a148795d9f25f89d4",
+id: id,
+snippet: {
+  title:"Nodejs",
+  description:"Backend",
+  customUrl:"https://youtu.be/3JWTaaS7LdU?list=RDYsXMglC9A",
+  publishedAt: Date.now(),
+  thumbnails: {   
+      url: "https://youtu.be/3JWTaaS7LdU?list=RDYsXMglC9A",
+      width: "365",
+      height: "200"
+      },
+  defaultLanguage:"English",
+  localized: {
+    title: "ACCESS API",
+    description: "Here is our Description",
+      },
+  country:"Ethiopia"
+    },
+contentDetails: {
+  relatedPlaylists: {
+    likes: id*15,
+    favorites:id-60,
+    uploads:id
+      }
+    },
+statistics: {
+  viewCount:id*id*id,
+  subscriberCount:id*id,  // this value is rounded to three significant figures
+  hiddenSubscriberCount: id-56,
+  videoCount:id,
+    },
+topicDetails: {
+  topicIds: [
+      id
+      ],
+  topicCategories: [
+      "education"
+  ]
+    },
+status: {
+  privacyStatus:"Public",
+  isLinked:  true,
+  longUploadsStatus:id,
+  madeForKids:  true,
+  selfDeclaredMadeForKids:  true
+    },
+brandingSettings: {
+  channel: {
+    title:"itace",
+    description:"here is the description",
+    keywords:"keywords",
+    defaultTab:"tab",
+    trackingAnalyticsAccountId:id*52,
+    moderateComments:  true,
+    showRelatedChannels:  true,
+    showBrowseView:  true,
+    featuredChannelsTitle:"none",
+    featuredChannelsUrls: [
+        "none"
+        ],
+    unsubscribedTrailer:"the expected data",
+    profileColor:"red",
+    defaultLanguage:"english",
+    country:"Ethiopia"
+      },
+  watch: {
+    textColor:"yellow",
+    backgroundColor:"red",
+    featuredPlaylistId:id
+      }
+    },
+auditDetails: {
+  overallGoodStanding:  true,
+  communityGuidelinesGoodStanding:  true,
+  copyrightStrikesGoodStanding:  true,
+  contentIdClaimsGoodStanding:  true
+    },
+contentOwnerDetails: {
+  contentOwner:"the team",
+  timeLinked: Date.now()
+    },
+localizations: {
+    
+    title:"title",
+    description:"description"
       
-              
+    }
+ }).then(data =>{
+   res.json({
+     data
+   })
+ })
+}else{
+  res.send('NOT FOUND')
+}
+},
+}     
       
  module.exports = authController
       

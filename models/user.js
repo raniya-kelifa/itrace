@@ -7,7 +7,6 @@ const UserSchema = new Schema({
   username: { type: String, default: '' },
   email: { type: String, default: '' },
   password: { type: String },
-  profile: { type: Schema.Types.ObjectId, ref: 'Profile' },
   archived: { type: Boolean, default: false },
   created_at: { type: Date },
 })

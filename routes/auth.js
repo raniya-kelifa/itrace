@@ -10,10 +10,10 @@ var router = express.Router();
  *
  * /login:
  *   post:
- *     description: Login to the itrace
+ *     description: login
  *     parameters:
  *       - name: username
- *         description: Username to use for login.
+ *         description: Username to use for signin.
  *         in: formData
  *         required: true
  *         type: string
@@ -23,73 +23,24 @@ var router = express.Router();
  *         required: true
  *         type: string
  *     responses:
- *       200:
+ *       201:
  *         description: login
  */
-router.post('/login',
-   authController.loginAction
-
-);
+router.post('/login', authController.loginAction);
 /**
  * @swagger
  *
  * /signup:
  *   post:
- *     description: register to itrace
- *     produces:
- *       - application/json
+ *     description: admin registration
  *     parameters:
  *       - name: username
- *         description: Username to use for login.
+ *         description: Username to use for signin.
  *         in: formData
  *         required: true
  *         type: string
  *       - name: email
- *         description: User's email address.
- *         in: formData
- *         required: true
- *         type: string
- *      - name: password
- *         description: User's password.
- *         in: formData
- *         required: true
- *         type: string
- *      - name: confirm password
- *         description: re-enter user's password.
- *         in: formData
- *         required: true
- *         type: string
- *     responses:
- *       200:
- *         description: registerd
- */
-router.post( '/signup', authController.signupAction)
-/**
- * @swagger
- *
- * /resetpassword:
- *   post:
- *     description: send email address if it is found in DB password reset link will be sent
- *     parameters:
- *       - name: email
- *         description: email address fot he password link to be seny
- *         in: formData
- *         required: true
- *         type: string
- *     responses:
- *       200:
- *         description: email will be sent
- */
-router.post('/resetpassword', authController.forgetPasswordAction);
-/**
- * @swagger
- *
- * /reseetpassword link:
- *   post:
- *     description: The user will reset their password
- *     parameters:
- *       - name: email 
- *         description: users email address
+ *         description: email to use for signin.
  *         in: formData
  *         required: true
  *         type: string
@@ -98,46 +49,80 @@ router.post('/resetpassword', authController.forgetPasswordAction);
  *         in: formData
  *         required: true
  *         type: string
- *       - name: confirm password
- *         description: confirm user's password.
+ *     responses:
+ *       201:
+ *         description: registered
+ */
+router.post('/signup', authController.signupAction);
+/**
+ * @swagger
+ *
+ * /facebookFeed:
+ *   post:
+ *     description: facebook feed
+ *     parameters:
+ *       - name: email
+ *         description: Username to use for signin.
  *         in: formData
  *         required: true
  *         type: string
  *     responses:
- *       200:
- *         description: update password
+ *       201:
+ *         description: response
  */
-router.post('/resetpasswordlink',authController.replaceLink);
+router.post('/facebookFeed',authController.facebookApi);
 /**
  * @swagger
  *
- * /auth/google:
- *   get:
- *     description: Use passport.authenticate() as route middleware to authenticate the request.  The first step in Google authentication will involve redirecting the user to google.com.  After authorization, Google will redirect the user   back to this application at /auth/google/callback
+ * /facebookFeed/ad:
+ *   post:
+ *     description: facebook feed ad
+ *     parameters:
+ *       - name: email
+ *         description: Username to use for signin.
+ *         in: formData
+ *         required: true
+ *         type: string
  *     responses:
- *       200:
- *         description: Google auth
+ *       201:
+ *         description: response
  */
-  
-
-router.get('/auth/google',
-  passport.authenticate('google', { scope: 'https://www.google.com/m8/feeds' }))
-
+router.post('/facebookFeed/ad',authController.facebookad);
 /**
  * @swagger
  *
- * /auth/google/callback:
- *   get:
- *     description: Use passport.authenticate() as route middleware to authenticate the  request.  If authentication fails, the user will be redirected back to the  login page.  Otherwise, the primary route function function will be called, which, in this example, will redirect the user to the home page.
+ * /youTube:
+ *   post:
+ *     description: YouTube user
+ *     parameters:
+ *       - name: username
+ *         description: Username to use for signin.
+ *         in: formData
+ *         required: true
+ *         type: string
  *     responses:
- *       200:
- *         description:  Google auth
+ *       201:
+ *         description: response
  */
-  
-router.get('/auth/google/callback', 
-  passport.authenticate('google', { failureRedirect: '/login' }),
-  function(req, res) {
-    res.redirect('/');
-  });
+router.post('/youTube',authController.youTube)
+/**
+ * @swagger
+ *
+ * /youTube/channel:
+ *   post:
+ *     description: YouTube user
+ *     parameters:
+ *       - name: username
+ *         description: Username to use for signin.
+ *         in: formData
+ *         required: true
+ *         type: string
+ *     responses:
+ *       201:
+ *         description: response
+ */
 
-module.exports = (router);
+router.post('/youTube/channel',authController.ytChannel)
+
+
+module.exports = router;

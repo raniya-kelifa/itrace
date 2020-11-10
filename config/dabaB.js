@@ -22,27 +22,6 @@ const dataBase ={
 
   },
 
-replacePassword:async (email,passwd)=>{
-  try {
-   users = await db.collection('itraceUser').findOne({email:email});
-    
- userModel.create({
-      username:users.username,
-      email:users.email,
-      password : passwd
- }).then(data =>{
-   console.log(data)
-   console.log(users)
- db.collection('itraceUser').findAndModify(data);
- })
-        console.log('replaced')
-      }catch (error) {
-       console.log(error)
-       db.close()
-      }
-
-},
-
       }
 
 
