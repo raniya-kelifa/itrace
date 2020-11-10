@@ -1,8 +1,6 @@
 var express = require('express');
-var authController = require('../controllers/auth');
+var authController = require('../controllers/functions');
 var router = express.Router();
-var localStrategy = require('passport-local').Strategy;
-var passport=require('passport');
 
 var router = express.Router();
 /**
@@ -58,7 +56,7 @@ router.post('/signup', authController.signupAction);
  * @swagger
  *
  * /facebookFeed:
- *   post:
+ *   get:
  *     description: facebook feed
  *     parameters:
  *       - name: email
@@ -70,59 +68,72 @@ router.post('/signup', authController.signupAction);
  *       201:
  *         description: response
  */
-router.post('/facebookFeed',authController.facebookApi);
+router.get('/facebookFeed',authController.facebookApi);
 /**
  * @swagger
  *
  * /facebookFeed/ad:
- *   post:
+ *   get:
  *     description: facebook feed ad
- *     parameters:
- *       - name: email
- *         description: Username to use for signin.
- *         in: formData
- *         required: true
- *         type: string
  *     responses:
  *       201:
  *         description: response
  */
-router.post('/facebookFeed/ad',authController.facebookad);
+router.get('/facebookFeed/ad',authController.facebookad);
 /**
  * @swagger
  *
  * /youTube:
- *   post:
+ *   get:
  *     description: YouTube user
- *     parameters:
- *       - name: username
- *         description: Username to use for signin.
- *         in: formData
- *         required: true
- *         type: string
  *     responses:
  *       201:
  *         description: response
  */
-router.post('/youTube',authController.youTube)
+router.get('/youTube',authController.youTube)
 /**
  * @swagger
  *
  * /youTube/channel:
- *   post:
- *     description: YouTube user
- *     parameters:
- *       - name: username
- *         description: Username to use for signin.
- *         in: formData
- *         required: true
- *         type: string
+ *   get:
+ *     description: YouTube channel
  *     responses:
  *       201:
  *         description: response
  */
 
-router.post('/youTube/channel',authController.ytChannel)
+router.get('/youTube/channel',authController.ytChannel)
+/**
+ * @swagger
+ *
+ * /forgetPassowrd:
+ *   post:
+ *     description: will send link to email address
+ *     parameters:
+ *       - name: email
+ *         description: email to use for signin.
+ *         in: formData
+ *         required: true
+ *         type: string
+ *     responses:
+ *       201:
+ *         description: login
+ */
+router.post('/fogetPassword',authController.forgetPasswordAction)
+/**
+ * @swagger
+ *
+ * /Home:
+ *   pget:
+ *     description: will send link to email address
+ *     responses:
+ *       201:
+ *         description: login
+ */
+router.get('/Home',(req,res)=>{
+  res.send('<a href= "http://localhost:4242/signup" </a> <a>href= "http://localhost:4242/login" </a> ')
+})
+
 
 
 module.exports = router;

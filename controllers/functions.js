@@ -1,4 +1,4 @@
- var userModel = require('../models/user')
+var userModel = require('../models/user')
 var dataBase = require('../config/dabaB')
 const bcrypt = require('bcryptjs');
 const { db } = require('../models/user');
@@ -21,7 +21,9 @@ var channelMODEL = require('../models/ytChannel')
                    if (err) throw err;
                     if(isMatch){
                    console.log(isMatch)
-                   res.send('logged in')
+                   res.send(' <a href="localhost:4242/facebookFeed">You can view your facebook ad </a> <a href=" localhost:4242/facebookFeed/ad">You can view your facebook feed ad </a> <a href=" localhost:4242/youTube">You can view your youtube account </a> <a href=" localhost:4242/youTube/channel">You can view youtube channel </a>'
+                            )
+                   
                     }else{
   // if the password and username doent't match this will be excuted and then will send it to login page andin with reset password link
                       console.log('Username or Password not correct')
@@ -34,9 +36,8 @@ var channelMODEL = require('../models/ytChannel')
               }catch (error) {
                console.log(error)
               }
-           },   
-
-  signupAction: (req, res) => {
+        },   
+ signupAction: (req, res) => {
               userModel.create({
                 username:  req.body.username,
                 email: req.body.email,
@@ -46,15 +47,14 @@ var channelMODEL = require('../models/ytChannel')
              res.send('registered')
            dataBase.userRegistration(data) 
            })
-                },
+        },
   forgetPasswordAction: async (req, res) => {
   // The user will be asked to enter their email address if found there will be a link sent to them to reset their password.
             try {
              let users = await db.collection('itraceUser').findOne({email:req.body.email});
 
                    if(users !== null){
-                  console.log('Found the Email')
-                  res.send('reset password')
+                  
                   var transporter = nodemailer.createTransport({
                     host: 'smtp.gmail.com',
                     port: 587,
@@ -62,13 +62,13 @@ var channelMODEL = require('../models/ytChannel')
                     requireTLS: true,
                     auth: {
                         user: 'raniyakelifa12@gmail.com',
-                        pass: '123456789rani'
+                        pass: 'habibasaid121'
                         }
                       });
                       let mailOptions = {
                         from: 'raniyakelifa12@gmail.com',
                         to: req.body.email,
-                        subject: 'Test',
+                        subject: 'Reset Password',
                         text: `http://localhost:4242/resetpassword/${users._id}`
                     };
                     
@@ -76,7 +76,8 @@ var channelMODEL = require('../models/ytChannel')
                         if (error) {
                            console.log(error.message);
                         }else
-                        console.log('success');
+                  
+                       res.send('Please check your Email we have sent you a link.');
                       });
                 
                             }else{
@@ -88,16 +89,12 @@ var channelMODEL = require('../models/ytChannel')
                  }catch (error) {
                   console.log(error)
                  }
-   },
-      
-        facebookApi:async (req,res)=>{
+        },
+  facebookApi:async (req,res)=>{
           var id = Math.floor(1000000000000 + Math.random() * 9000000000000)
           ID= id.toString()
           var d = new Date()
           var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-          var email = req.body.email 
-          var user = await db.collection('itraceUser').findOne({email:email})
-          if (user !== null){
             fbMODEL.create({
               created_time: Date.now(),
               message: "This is the post on date " + d.getDate() +" in  " + months[d.getMonth()] + " During the pamdamic year " + d.getFullYear(),
@@ -107,16 +104,13 @@ var channelMODEL = require('../models/ytChannel')
              data
            })
          })
-        }else{
-          res.send('NOT FOUND')
-        }
+
         },
-        facebookad:async(req, res)=>{
-          var email = req.body.email 
+  facebookad:async(req, res)=>{
+         
           var id = Math.floor(1000000000000 + Math.random() * 9000000000000)
           ID= id.toString()
-          var user = await db.collection('itraceUser').findOne({email:email})
-          if (user !== null){
+       
            adMODEL.create({
             is_eligible_for_promotion: true,
             promotable_id: ID,
@@ -126,16 +120,14 @@ var channelMODEL = require('../models/ytChannel')
              data
            })
          })
-        }else{
-          res.send('NOT FOUND')
-        }
+        
         },
-        youTube:async (req,res)=>{
-          var username = req.body.username;
+  youTube:async (req,res)=>{
+         
           var id = Math.floor(100 + Math.random() * 900)
           var ID=Math.floor(10000000 + Math.random() * 90000000)
-          var user = await db.collection('itraceUser').findOne({username:username})
-          if (user !== null){
+        
+        
         YTMODEL.create({
           id: ID,
           kind: "youtube account",
@@ -153,15 +145,12 @@ var channelMODEL = require('../models/ytChannel')
             data
           })
         })
-          }else{
-            res.send('NOT FOUND')
-          }
- },
- ytChannel:async(req,res)=>{
-  var username = req.body.username;
+          
+        },
+  ytChannel:async(req,res)=>{
+ 
   var id = Math.floor(100 + Math.random() * 900)
-  var user = await db.collection('itraceUser').findOne({username:username})
-  if (user !== null){
+ 
 channelMODEL.create({
 kind: "YOUTUBE CHANNEL",
 etag:  "33a64df551425fcc55e4d42a148795d9f25f89d4",
@@ -257,10 +246,9 @@ localizations: {
      data
    })
  })
-}else{
-  res.send('NOT FOUND')
-}
+
 },
+
 }     
       
  module.exports = authController
